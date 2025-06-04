@@ -17,5 +17,27 @@ public class Person {
     private PApplet app;
     private int width, height;
     
+    public Person(PApplet p, int x, int y, String imagePath) {
+        this.app = p;
+        this.x = x;
+        this.y = y;
+        this.image = app.loadImage(imagePath);
+        this.width = image.width;
+        this.height = image.height;
+    }
     
+    public void move(int dx, int dy){
+        x += dx;
+        y += dy;
+    }
+    
+    public void moveTo(int dx, int dy){
+        x = dx;
+        y = dy;
+    }
+    
+    public void draw(){
+        app.image(image, x, y);
+    }
+
 }
