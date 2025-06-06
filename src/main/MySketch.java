@@ -17,9 +17,13 @@ public class MySketch extends PApplet {
     private int row = 50;
     private int width = pixelW*row;
     private int height = pixelL*col;
+    // end screen settings
+    // perosn attributes
     private Person person;
     private Person person2;
     public int speed = 4;
+    
+    // other misc
     private int stage = 0;
     private boolean keyUP, keyDown, keyLeft, keyRight;
     
