@@ -39,5 +39,11 @@ public class Person {
     public void draw(){
         app.image(image, x, y);
     }
+    public void displayInfo(PApplet p) {
+        app.fill(0);
+        app.text("X: " + x, x, y-20);
+        app.text("Y: " + y, x, y-10);
+    }
+
 
 }
