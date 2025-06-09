@@ -22,6 +22,7 @@ public class MySketch extends PApplet {
     // perosn attributes
     
     private Person person;
+    private Enemy e1;
     // other misc
     private int stage = 0;
     
@@ -33,6 +34,7 @@ public class MySketch extends PApplet {
     public void setup(){
         background(255);
         person = new Person(this);
+        e1 = new Enemy(this, 500, 600,person, person.x, person.y,person.playerImages[0].width, person.playerImages[0].height);
         camera = new Camera(this);
     }
     
@@ -53,13 +55,15 @@ public class MySketch extends PApplet {
         person.update(); // player movements
         person.draw(); // player looks
         person.displayInfo(this); // testing - display player x and y
+        e1.update();
+        e1.draw();
         // rests
         resetMatrix();
         // testing - shows corrdinates of the camera and player
         fill(0);
         text("Player: x=" + person.x + " , y=" + person.y, 500, 20);
         text("Camera: x=" + camera.x + " , y=" + camera.y, 500, 40);
-    }
+    }// end draw
     
     ////////////////////////////// KEYBOARD INPUTS ////////////////////////////////
     public void keyPressed() {

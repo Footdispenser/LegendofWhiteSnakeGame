@@ -30,14 +30,18 @@ public class Person {
         this.app = app;
         this.x = app.width/2; // starts player form the middle of the screen
         this.y = app.height/2;
+
         // load all images frames
         this.offset = 0;
         playerFrames = 16;
         playerImages = new PImage[playerFrames];
         for (int i = 0; i < playerFrames; i++) {
-            String frameNum = String.format("%02d", i);
-            playerImages[i] = app.loadImage("images/White Snake Frames/WhiteSnake_" + frameNum + ".png");// nf changes to one decimal place
+            String frameNum = String.format("%02d", i);// formats it into 2 decimals
+            playerImages[i] = app.loadImage(
+                    "images/White Snake Frames/WhiteSnake_" + frameNum + ".png");
         }
+        this.w = playerImages[0].width;
+        this.h = playerImages[0].height;
     }
     // for movement/animations
     public void update(){
@@ -87,6 +91,4 @@ public class Person {
         app.text("X: " + x, x, y-20);
         app.text("Y: " + y, x, y-10);
     }
-
-
 }
