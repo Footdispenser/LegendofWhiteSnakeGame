@@ -4,6 +4,7 @@
  */
 package main;
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /**
  *
@@ -15,61 +16,67 @@ public class MySketch extends PApplet {
     private int pixelL = 32;
     private int col = 25;
     private int row = 50;
-    private int width = pixelW*row;
-    private int height = pixelL*col;
+    public int width = pixelW*row;
+    public int height = pixelL*col;
     // end screen settings
     // perosn attributes
-    private Person person;
-    private Person person2;
-    public int speed = 4;
     
+    private Person person;
     // other misc
     private int stage = 0;
-    private boolean keyUP, keyDown, keyLeft, keyRight;
+    
+    private Camera camera;
     
     public void settings(){
         size((width), height);  
     }
-    
     public void setup(){
         background(255);
-        person = new Person(this, width/2, height/2,"images/WhiteSnake_0 (1) (1).png");
-        person2 = new Person(this, 400, 400,"images/BiggerGrassBlock.png");
+        person = new Person(this);
+        camera = new Camera(this);
     }
     
     public void draw() {
-    background(255);
-        person2.draw();
-        person.draw();
-
-        // can be changed to universal speed when needed
-        // add to person class
-       int dx = 0;
-       int dy = 0;
+        // send the player information to the camera for accurate following
+        camera.follow( person.x, person.y, width, height, 
+                person.playerImages[0].width, person.playerImages[0].height);
+        // activates the camera/applys it
+        camera.apply();
+        // draws the background 
+        background(255);
         
-        if (keyLeft) dx -= speed;
-        if (keyRight) dx += speed;
-        if (keyUP) dy -= speed;
-        if (keyDown) dy += speed;
-        person.displayInfo(this);
-        person.move(dx, dy);
-  }
+        // testing black rectangle
+        fill(0);
+        rect(500,600, 50, 60);
+        
+        // drawing in the player
+        person.update(); // player movements
+        person.draw(); // player looks
+        person.displayInfo(this); // testing - display player x and y
+        // rests
+        resetMatrix();
+        // testing - shows corrdinates of the camera and player
+        fill(0);
+        text("Player: x=" + person.x + " , y=" + person.y, 500, 20);
+        text("Camera: x=" + camera.x + " , y=" + camera.y, 500, 40);
+    }
+    
+    ////////////////////////////// KEYBOARD INPUTS ////////////////////////////////
     public void keyPressed() {
-        if (key == 'a') keyLeft = true; // LEFT
-        else if (key == 'd') keyRight = true; // RIGHT
-        if (key == 'w') keyUP = true; // UP
-        else if (key == 's') keyDown = true; // DOWN 
+        if (key == 'a') person.keyLeft = true; // LEFT
+        else if (key == 'd') person.keyRight = true; // RIGHT
+        if (key == 'w') person.keyUP = true; // UP
+        else if (key == 's') person.keyDown = true; // DOWN 
    }
-
     public void keyReleased() {
         if (key == 'a') {
-            keyLeft = false;
+            person.keyLeft = false;
         }else if (key == 'd') {
-            keyRight = false;
+            person.keyRight = false;
         }if (key == 'w') {
-            keyUP = false;
+            person.keyUP = false;
         }else if (key == 's') {
-            keyDown = false;
+            person.keyDown = false;
         }
     }
 

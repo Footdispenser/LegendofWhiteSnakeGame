@@ -12,33 +12,76 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 public class Person {
-    public int x,y;
-    private PImage image;
     private PApplet app;
-    private int width, height;
+    /////////////// player settings
+    public int x,y,dx,dy, w, h;
+    public boolean keyLeft, keyRight, keyUP, keyDown;
+    public int speed = 8;
+    /////////////// player animation
+    public PImage playerImages[];
+    private int currentFrame = 0;
+    private int frameCount = 0;
+    int playerFrames, offset;
+    private int frameRep = 8;
+    private int animationSpeed = 4;
     
-    public Person(PApplet p, int x, int y, String imagePath) {
-        this.app = p;
-        this.x = x;
-        this.y = y;
-        this.image = app.loadImage(imagePath);
-        this.width = image.width;
-        this.height = image.height;
+    // main constructor
+    public Person(PApplet app) {
+        this.app = app;
+        this.x = app.width/2; // starts player form the middle of the screen
+        this.y = app.height/2;
+        // load all images frames
+        this.offset = 0;
+        playerFrames = 16;
+        playerImages = new PImage[playerFrames];
+        for (int i = 0; i < playerFrames; i++) {
+            String frameNum = String.format("%02d", i);
+            playerImages[i] = app.loadImage("images/White Snake Frames/WhiteSnake_" + frameNum + ".png");// nf changes to one decimal place
+        }
     }
-    
-    public void move(int dx, int dy){
+    // for movement/animations
+    public void update(){
+        //////////////////// player movement ////////////////////////////////
+        if (keyLeft){
+            dx -= speed;
+            offset = 8;// changes animation when it moves left
+        }if (keyRight){
+            dx += speed;
+            offset = 0;// animation for moving right
+        } 
+        if (keyUP) dy -= speed; // when moving upwards
+        if (keyDown) dy += speed; // when moving downards
+        // code to move the player
         x += dx;
         y += dy;
+        ////////////////////////////////////////////////////////////////////
+        //boundary check    
+        if(x+ playerImages[0].width >= app.width){ // doesnt go past furthest right
+            x=app.width-playerImages[0].width;
+        }else if (x <= 0){ // left
+            x=0;
+        }if (y+playerImages[0].height>= app.height){ // down
+            y=app.height-playerImages[0].height;
+        }else if (y<=0){ // up
+            y=0;
+        }
+        frameCount++;
+        if (frameCount % animationSpeed == 0) { 
+            currentFrame = (currentFrame + 1) % frameRep;
+        }
+        // resests 
+        dx = 0;
+        dy = 0;
     }
-    
-    public void moveTo(int dx, int dy){
-        x = dx;
-        y = dy;
-    }
-    
+    // drawing the player
     public void draw(){
-        app.image(image, x, y);
+        // shows player hitbox
+        app.fill(255,0,0);
+        app.rect(x, y, playerImages[0].width, playerImages[0].height);
+        // draws the player
+        app.image(playerImages[currentFrame+offset], x, y);
     }
+    // players coordinates
     public void displayInfo(PApplet p) {
         app.fill(0);
         app.text("X: " + x, x, y-20);
