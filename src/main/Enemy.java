@@ -17,7 +17,7 @@ public class Enemy {
     PApplet app;
     private int targetX,targetY;
     private float pW, pH;
-    private int speed = 6;
+    private int speed = 5;
     private Person person;
 
     public Enemy(PApplet app, int x, int y, Person person, int targetX, int targetY, float pW, float pH){
@@ -49,13 +49,13 @@ public class Enemy {
            if(x<targetX){
                keyRight = true;
                keyLeft = false;
-           } if(x>targetX){
+           } else if(x>targetX){
                keyRight = false;
                keyLeft = true;
            }if(y<targetY){
                keyDown = true;
                keyUP = false;
-           } if(y > targetY){
+           } else if(y > targetY){
                keyDown = false;
                keyUP = true;
            }

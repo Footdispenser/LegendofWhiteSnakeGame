@@ -81,7 +81,7 @@ public class Person {
     public void draw(){
         // shows player hitbox
         app.fill(255,0,0);
-        app.rect(x, y, playerImages[0].width, playerImages[0].height);
+//        app.rect(x, y, playerImages[0].width, playerImages[0].height);
         // draws the player
         app.image(playerImages[currentFrame+offset], x, y);
     }

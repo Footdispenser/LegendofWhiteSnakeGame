@@ -12,10 +12,10 @@ import processing.core.PImage;
  */
 public class MySketch extends PApplet {
     // screen settings
-    private int pixelW = 32;
-    private int pixelL = 32;
-    private int col = 25;
-    private int row = 50;
+    public int pixelW = 32;
+    public int pixelL = 32;
+    public int col = 25;
+    public int row = 50;
     public int width = pixelW*row;
     public int height = pixelL*col;
     // end screen settings
@@ -23,6 +23,7 @@ public class MySketch extends PApplet {
     
     private Person person;
     private Enemy e1;
+    private tilemap map;
     // other misc
     private int stage = 0;
     
@@ -33,6 +34,7 @@ public class MySketch extends PApplet {
     }
     public void setup(){
         background(255);
+        map = new tilemap(this, person);
         person = new Person(this);
         e1 = new Enemy(this, 500, 600,person, person.x, person.y,person.playerImages[0].width, person.playerImages[0].height);
         camera = new Camera(this);
@@ -41,11 +43,11 @@ public class MySketch extends PApplet {
     public void draw() {
         // send the player information to the camera for accurate following
         camera.follow( person.x, person.y, width, height, 
-                person.playerImages[0].width, person.playerImages[0].height);
+        person.playerImages[0].width, person.playerImages[0].height);
         // activates the camera/applys it
         camera.apply();
         // draws the background 
-        background(255);
+        map.draw();
         
         // testing black rectangle
         fill(0);
@@ -67,23 +69,21 @@ public class MySketch extends PApplet {
     
     ////////////////////////////// KEYBOARD INPUTS ////////////////////////////////
     public void keyPressed() {
-        if (key == 'a') person.keyLeft = true; // LEFT
-        else if (key == 'd') person.keyRight = true; // RIGHT
-        if (key == 'w') person.keyUP = true; // UP
-        else if (key == 's') person.keyDown = true; // DOWN 
+        if (key == 'a'|| key == 'A') person.keyLeft = true; // LEFT
+        else if (key == 'd'|| key == 'D') person.keyRight = true; // RIGHT
+        if (key == 'w'|| key == 'W') person.keyUP = true; // UP
+        else if (key == 's'|| key == 'S') person.keyDown = true; // DOWN 
    }
     public void keyReleased() {
-        if (key == 'a') {
+        if (key == 'a' || key == 'A') {
             person.keyLeft = false;
-        }else if (key == 'd') {
+        }else if (key == 'd'|| key == 'D') {
             person.keyRight = false;
-        }if (key == 'w') {
+        }if (key == 'w'|| key == 'W') {
             person.keyUP = false;
-        }else if (key == 's') {
+        }else if (key == 's'|| key == 'S') {
             person.keyDown = false;
         }
     }
-
-
 }
 
