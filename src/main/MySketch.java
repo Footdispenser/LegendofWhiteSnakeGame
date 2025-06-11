@@ -33,11 +33,12 @@ public class MySketch extends PApplet {
         size((width), height);  
     }
     public void setup(){
-        background(255);
-        map = new tilemap(this, person);
+        background(0);
         person = new Person(this);
         e1 = new Enemy(this, 500, 600,person, person.x, person.y,person.playerImages[0].width, person.playerImages[0].height);
         camera = new Camera(this);
+        map = new tilemap(this, person);
+
     }
     
     public void draw() {

@@ -17,6 +17,10 @@ public class Person {
     public int x,y,dx,dy, w, h;
     public boolean keyLeft, keyRight, keyUP, keyDown;
     public int speed = 8;
+    public int hitboxOffsetX = 25; // 21 pixels right from player.x
+    public int hitboxWidth = 68;   // Hitbox width
+    public int hitboxHeight = 105; // Hitbox height
+
     /////////////// player animation
     public PImage playerImages[];
     private int currentFrame = 0;
@@ -60,15 +64,15 @@ public class Person {
         y += dy;
         ////////////////////////////////////////////////////////////////////
         //boundary check    
-        if(x+ playerImages[0].width >= app.width){ // doesnt go past furthest right
-            x=app.width-playerImages[0].width;
-        }else if (x <= 0){ // left
-            x=0;
-        }if (y+playerImages[0].height>= app.height){ // down
-            y=app.height-playerImages[0].height;
-        }else if (y<=0){ // up
-            y=0;
-        }
+//        if(x+ playerImages[0].width >= app.width){ // doesnt go past furthest right
+//            x=app.width-playerImages[0].width;
+//        }else if (x <= 0){ // left
+//            x=0;
+//        }if (y+playerImages[0].height>= app.height){ // down
+//            y=app.height-playerImages[0].height;
+//        }else if (y<=0){ // up
+//            y=0;
+//        }
         frameCount++;
         if (frameCount % animationSpeed == 0) { 
             currentFrame = (currentFrame + 1) % frameRep;
@@ -81,7 +85,7 @@ public class Person {
     public void draw(){
         // shows player hitbox
         app.fill(255,0,0);
-//        app.rect(x, y, playerImages[0].width, playerImages[0].height);
+        app.rect(x + hitboxOffsetX, y, hitboxWidth, hitboxHeight);
         // draws the player
         app.image(playerImages[currentFrame+offset], x, y);
     }

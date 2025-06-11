@@ -15,15 +15,15 @@ public class tilemap{
     Person p;
     int maprow[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     int [][]tilemap = {
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
     int rows, cols;
     int cellWidth, cellHeight;
@@ -61,46 +61,56 @@ public class tilemap{
         }//end for row
     }// end render
     
-    public void isPlayerColliding(){
-        String collisionSide = "none";
+    public void isPlayerColliding() {
+        // cycle through array
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-              if(tilemap[i][j]==1){
-                  int distX = PApplet.floor((p.x+ p.w/2)-(j*cellWidth+cellWidth/2));
-                  int distY = PApplet.floor((p.y + p.h/2) - (i * cellHeight + cellHeight / 2));
-                  int combindedHalfW = PApplet.floor(p.w/2+cellWidth/2);
-                  int combindedHalfH = PApplet.floor(p.h / 2 + cellHeight / 2);
-                  //check for x overlap
-                  if(PApplet.abs(distX)<combindedHalfW){
-                      //check for y overlap
-                      if(PApplet.abs(distY)<combindedHalfH){
-                          int overlapX = combindedHalfW-PApplet.abs(distX);
-                          int overlapY = combindedHalfW-PApplet.abs(distY);
-                          //look for smallest overlaps
-                          if(overlapX>= overlapY){
-                              //correct Y pos
-                              if(distY>0){
-                                  collisionSide = "TOP";
-                                  p.y += overlapY;
-                                  
-                              }else{
-                                  collisionSide = "BOTTOM";
-                                  p.y -= overlapY;
-                              }// end y corrections
-                          }else{// correct x pos
-                              if(distY>0){
-                                  collisionSide = "LEFT";
-                                  p.x += overlapX;
+                if (tilemap[i][j] == 1) { // If tile is a wall
+                    int wallLeft = j * cellWidth;
+                    int wallRight = wallLeft + cellWidth;
+                    int wallTop = i * cellHeight;
+                    int wallBottom = wallTop + cellHeight;
 
-                              }else{
-                                  collisionSide = "RIGHT";
-                                  p.x -= overlapX;
-                              }
-                          }
-                      }
-                      System.out.println(collisionSide);
-                  }
-              }  
+                    // player hitbox
+                    int playerLeft = p.x + p.hitboxOffsetX;
+                    int playerRight = playerLeft + p.hitboxWidth;
+                    int playerTop = p.y;
+                    int playerBottom = playerTop + p.hitboxHeight;
+
+                    // Check if player is intersecting with the wall
+                    if (playerRight > wallLeft
+                            && playerLeft < wallRight
+                            && playerBottom > wallTop
+                            && playerTop < wallBottom) {
+
+                        // Calculate overlap on each side
+                        int overlapLeft = playerRight - wallLeft;
+                        int overlapRight = wallRight - playerLeft;
+                        int overlapTop = playerBottom - wallTop;
+                        int overlapBottom = wallBottom - playerTop;
+
+                        // Find the smallest overlap to resolve collision
+                        int minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
+                                Math.min(overlapTop, overlapBottom));
+
+                        // Resolve collision based on the smallest overlap
+                        if (minOverlap == overlapLeft) {
+                            p.x = wallLeft - p.hitboxWidth - p.hitboxOffsetX; // Push player left
+                            p.dx = 0;
+                        } else if (minOverlap == overlapRight) {
+                            p.x = wallRight - p.hitboxOffsetX; // Push player right
+                            p.dx = 0;
+                        } else if (minOverlap == overlapTop) {
+                            p.y = wallTop - p.hitboxHeight; // Push player up
+                            p.dy = 0; 
+                        } else if (minOverlap == overlapBottom) {
+                            p.y = wallBottom; // Push player down
+                            p.dy = 0; 
+                        }
+
+
+                    }
+                }
             }
         }
     }
