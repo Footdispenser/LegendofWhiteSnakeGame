@@ -27,7 +27,7 @@ public class Person {
     private int frameCount = 0;
     int playerFrames, offset;
     private int frameRep = 8;
-    private int animationSpeed = 4;
+    private int animationSpeed = 3;
     
     // main constructor
     public Person(PApplet app) {
@@ -83,9 +83,12 @@ public class Person {
     }
     // drawing the player
     public void draw(){
+//        app.fill(128, 128, 128);
+//        app.circle(x + playerImages[0].width / 2, y + playerImages[0].height / 2, 400);
         // shows player hitbox
         app.fill(255,0,0);
         app.rect(x + hitboxOffsetX, y, hitboxWidth, hitboxHeight);
+
         // draws the player
         app.image(playerImages[currentFrame+offset], x, y);
     }

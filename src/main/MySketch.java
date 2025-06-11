@@ -22,8 +22,9 @@ public class MySketch extends PApplet {
     // perosn attributes
     
     private Person person;
-    private Enemy e1;
+//    private Enemy e1;
     private tilemap map;
+    Enemy [] enemies;
     // other misc
     private int stage = 0;
     
@@ -35,7 +36,13 @@ public class MySketch extends PApplet {
     public void setup(){
         background(0);
         person = new Person(this);
-        e1 = new Enemy(this, 500, 600,person, person.x, person.y,person.playerImages[0].width, person.playerImages[0].height);
+//        e1 = new Enemy(this, 500, 600,person, person.x, person.y,person.playerImages[0].width, person.playerImages[0].height);
+        enemies = new Enemy[10];
+        for(int k = 0;k<enemies.length;k++){ 
+            enemies[k] = new Enemy(this, round(random(0,1300)), round(random(0,1000)), 
+                    person, person.x, person.y,
+                    person.playerImages[0].width, person.playerImages[0].height);
+        }
         camera = new Camera(this);
         map = new tilemap(this, person);
 
@@ -47,21 +54,29 @@ public class MySketch extends PApplet {
         person.playerImages[0].width, person.playerImages[0].height);
         // activates the camera/applys it
         camera.apply();
+        
         // draws the background 
         map.draw();
-        
-        // testing black rectangle
-        fill(0);
-        rect(500,600, 50, 60);
         
         // drawing in the player
         person.update(); // player movements
         person.draw(); // player looks
         person.displayInfo(this); // testing - display player x and y
-        e1.update();
-        e1.draw();
-        // rests
+        
+//        e1.update();
+//        e1.draw();
+        for (int k = 0; k < enemies.length; k++) {
+            enemies[k].update();
+            enemies[k].draw();
+            if(rectangleIntersect(person, enemies[k])){
+                fill(255,0,0,25);
+                rect(0,0,width, height);
+            }
+        }
+
+        // resets
         resetMatrix();
+        
         // testing - shows corrdinates of the camera and player
         fill(0);
         text("Player: x=" + person.x + " , y=" + person.y, 500, 20);
@@ -86,5 +101,19 @@ public class MySketch extends PApplet {
             person.keyDown = false;
         }
     }
+    // intersects
+    boolean rectangleIntersect(Person r1, Enemy r2){
+        float distX = abs((r1.x+r1.w/2) - (r2.x+r2.w/2));
+        float distY = abs((r1.y+r1.h/2)-(r2.y+r2.h/2));
+        float combinedHalfWidths = r1.w/2+r2.w/2;
+        float combinedHaldHeights = r1.h/2 +r2.h/2;
+        
+        if(distX<combinedHalfWidths){
+            if(distY<combinedHaldHeights){
+                return true;
+            }
+        }
+    return false;
+    }
+    
 }
-

@@ -17,15 +17,15 @@ public class Enemy {
     PApplet app;
     private int targetX,targetY;
     private float pW, pH;
-    private int speed = 5;
+    private int speed = 3;
     private Person person;
 
     public Enemy(PApplet app, int x, int y, Person person, int targetX, int targetY, float pW, float pH){
         this.app = app;
         this.x = x;
         this.y = y;
-        this.w = 50;
-        this.h = 50;
+        this.w = 64;
+        this.h = 64;
         this.pW =pW;
         this.pH = pH;
         this.person = person;
