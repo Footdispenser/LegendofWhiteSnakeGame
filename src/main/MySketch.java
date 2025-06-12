@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package main;
+import java.util.ArrayList;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -24,7 +25,11 @@ public class MySketch extends PApplet {
     private Person person;
 //    private Enemy e1;
     private tilemap map;
-    Enemy [] enemies;
+    private Enemy [] enemies;
+    private ArrayList <Projectiles> projectiles = new ArrayList<>();
+    private int shootingCD = 0;
+    private final int SHOOT_DELAY = 1; // frames
+    
     // other misc
     private int stage = 0;
     
@@ -37,7 +42,7 @@ public class MySketch extends PApplet {
         background(0);
         person = new Person(this);
 //        e1 = new Enemy(this, 500, 600,person, person.x, person.y,person.playerImages[0].width, person.playerImages[0].height);
-        enemies = new Enemy[10];
+        enemies = new Enemy[1];
         for(int k = 0;k<enemies.length;k++){ 
             enemies[k] = new Enemy(this, round(random(0,1300)), round(random(0,1000)), 
                     person, person.x, person.y,
@@ -65,7 +70,7 @@ public class MySketch extends PApplet {
         
 //        e1.update();
 //        e1.draw();
-        for (int k = 0; k < enemies.length; k++) {
+        for(int k = 0; k < enemies.length; k++) {
             enemies[k].update();
             enemies[k].draw();
             if(rectangleIntersect(person, enemies[k])){
@@ -73,7 +78,30 @@ public class MySketch extends PApplet {
                 rect(0,0,width, height);
             }
         }
-
+        /// projectiles
+        for(int i = projectiles.size()-1;i>=0; i--){
+            Projectiles p = projectiles.get(i);
+            p.update();
+            p.draw();
+            // hit enemy
+            for(int j = 0; j<enemies.length; j++){
+                if(p.hits(enemies[j])){
+                    //creates new enemy
+                    enemies[j] = new Enemy(this,round(random(0,1300)), round(random(0,1000)),
+                        person, person.x, person.y,
+                        person.playerImages[0].width, person.playerImages[0].height);
+                    p.active =false;
+                    break;
+                }
+            }
+            //removes the enemy
+            if(!p.active){
+                projectiles.remove(i);
+            }
+        }
+        if(shootingCD>0){
+            shootingCD --;
+        }
         // resets
         resetMatrix();
         
@@ -114,6 +142,15 @@ public class MySketch extends PApplet {
             }
         }
     return false;
+    }
+    // mouse press to shoot projectile
+    public void mousePressed(){
+        if(shootingCD <= 0){
+            float startX =person.x + person.playerImages[0].width/2;
+            float startY = person.y + person.playerImages[0].height/2;
+            projectiles.add(new Projectiles(this, startX, startY, mouseX+camera.x, mouseY + camera.y));
+            shootingCD = SHOOT_DELAY;
+        }
     }
     
 }
