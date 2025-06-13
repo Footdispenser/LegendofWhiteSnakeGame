@@ -31,12 +31,12 @@ public class Projectiles {
          this.image = app.loadImage("images/ball (1).png");
     }// end main constructor
     
-    public void update(tilemap map){
+    public void update(level level){
         x+=vx;
         y+=vy;
         
         // Check for wall collisions
-        if (map.isProjectileCollidingWithWall(this)) {
+        if (level.isProjectileCollidingWithWall(this)) {
             active = false;
         }
 

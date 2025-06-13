@@ -24,7 +24,7 @@ public class MySketch extends PApplet {
     
     private Person person;
 //    private Enemy e1;
-    private tilemap map;
+//    private tilemap map;
     private Enemy [] enemies;
     private ArrayList <Projectiles> projectiles = new ArrayList<>();
     private int shootingCD = 0;
@@ -34,36 +34,144 @@ public class MySketch extends PApplet {
     private int stage = 0;
     
     private Camera camera;
+    private level[] levels;
+    private int currLevel = 0;
     
     public void settings(){
         size((width), height);  
     }
     public void setup(){
-        background(0);
         person = new Person(this);
         camera = new Camera(this);
-        map = new tilemap(this, person);
-        enemies = new Enemy[10];
-        ////////// initalise all the enemies
-        for(int k = 0;k<enemies.length;k++){
-            int[] floorPos = map.getRandomFloorPosition();
-            enemies[k] = new Enemy(this, floorPos[0], floorPos[1], 
-                    person, person.x, person.y,
-                    person.playerImages[0].width, person.playerImages[0].height);
-        }
+        levels = new level[2];
+        // Level 0
+        int map1[][] = {
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+        };
+        int [] playerSpawn1 = {740, 1300};
+        levels[0] = new level(this, map1, playerSpawn1,person);
+        
+        int map2[][] = {
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+        };
+        int[] playerSpawn2 = {740, 1300};
+        levels[1] = new level(this, map2, playerSpawn2 , person);
+
+//        background(0);
+
+        setPlayerPos();
+        initializeEnemies();
+//        map = new tilemap(this, person);
+//        enemies = new Enemy[10];
+//        ////////// initalise all the enemies
+//        for(int k = 0;k<enemies.length;k++){
+//            int[] floorPos = map.getRandomFloorPosition();
+//            enemies[k] = new Enemy(this, floorPos[0], floorPos[1], 
+//                    person, person.x, person.y,
+//                    person.playerImages[0].width, person.playerImages[0].height);
+//        }
 
 
     }
-    
+    ///////////////// SETUP METHODS //////////////////////////
+    private void setPlayerPos(){
+        int[]spawn = levels[currLevel].getPlayerSpawnPoint();
+        person.x = spawn[0];
+        person.y = spawn[1];
+        
+    }
+    private void initializeEnemies() {
+        ArrayList<int[]> spawns = levels[currLevel].getEnemySpawns();
+        enemies = new Enemy[spawns.size()]; // Proper size
+
+        for (int k = 0; k < spawns.size(); k++) {
+            int[] pos = spawns.get(k);
+            enemies[k] = new Enemy(this, pos[0], pos[1], person,
+                    person.x, person.y,
+                    person.playerImages[0].width,
+                    person.playerImages[0].height);
+
+        }
+    }
+
+    private void checkTeleport() {
+        for (int[] teleport : levels[currLevel].telepoints) {
+            if (person.x + person.w > teleport[0]
+                    && person.x < teleport[0] + teleport[2]
+                    && person.y + person.h > teleport[1]
+                    && person.y < teleport[1] + teleport[3]) {
+
+                // change level
+                currLevel = (currLevel + 1) % levels.length;
+
+                // Reset player to new level's spawn point
+                setPlayerPos();
+
+                // Create enemies for new level
+                initializeEnemies();
+
+                break;
+            }
+        }
+    }
     public void draw() {
+        /// checks if teleported or not / checks current stage
+        checkTeleport();
         // send the player information to the camera for accurate following
-        camera.follow( person.x, person.y, width, height, 
-                       person.playerImages[0].width, person.playerImages[0].height);
+        camera.follow(person.x, person.y, width, height,
+                person.playerImages[0].width, person.playerImages[0].height);
         // activates the camera/applys it
         camera.apply();
+        //// draw mappp
+        levels[currLevel].draw();
+
         
         // draws the background 
-        map.draw();
+//        map.draw();
         
         // drawing in the player
         person.update(); // player movements
@@ -73,20 +181,32 @@ public class MySketch extends PApplet {
 //        e1.update();
 //        e1.draw();
         /////////// ENEMIES /////////////////////////////////////
-        for(int k = 0; k < enemies.length; k++) {
-            if(enemies[k]!=null){
-                enemies[k].update(map);
+//        for(int k = 0; k < enemies.length; k++) {
+//            if(enemies[k]!=null){
+//                enemies[k].update(map);
+//                enemies[k].draw();
+//                if(rectangleIntersect(person, enemies[k])){
+//                    fill(255,0,0,25);
+//                    rect(0,0,width, height);
+//                }
+//            }
+//        }
+        for (int k = 0; k < enemies.length; k++) {
+            if (enemies[k] != null) {
+                enemies[k].update(levels[currLevel]); 
                 enemies[k].draw();
-                if(rectangleIntersect(person, enemies[k])){
-                    fill(255,0,0,25);
-                    rect(0,0,width, height);
+
+                if (rectangleIntersect(person, enemies[k])) {
+                    fill(255, 0, 0, 25);
+                    rect(0, 0, width, height);
                 }
             }
         }
-        /// projectiles////////////////////////////////
+
+        ////////// projectiles////////////////////////////////
         for(int i = projectiles.size()-1;i>=0; i--){
             Projectiles p = projectiles.get(i);
-            p.update(map);
+            p.update(levels[currLevel]);
             p.draw();
             // hit enemy
             for(int j = enemies.length-1;j>=0; j--){
@@ -136,7 +256,7 @@ public class MySketch extends PApplet {
             person.keyDown = false;
         }
     }
-    // intersects
+    //////////////////////// COLLISON DETECTION /////////////////////////////
     boolean rectangleIntersect(Person r1, Enemy r2){
         float distX = abs((r1.x+r1.w/2) - (r2.x+r2.w/2));
         float distY = abs((r1.y+r1.h/2)-(r2.y+r2.h/2));
@@ -150,7 +270,7 @@ public class MySketch extends PApplet {
         }
     return false;
     }
-    // mouse press to shoot projectile
+    ///////////////// MOUSE TRACKING AND PROJECTILE ///////////////////////
     public void mousePressed(){
         if(shootingCD <= 0){
             float startX =person.x + person.playerImages[0].width/2;

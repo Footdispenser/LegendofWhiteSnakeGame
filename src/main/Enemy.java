@@ -38,7 +38,7 @@ public class Enemy {
     }
     
     
-    public void update(tilemap map){
+    public void update(level level){
         
         targetX = person.x;
         targetY = person.y;
@@ -66,8 +66,8 @@ public class Enemy {
            keyDown = false; 
        }// end chase
        // boudnary check
-        x = PApplet.constrain(x, 0, map.cols * map.cellWidth - w);
-        y = PApplet.constrain(y, 0, map.rows * map.cellHeight - h);
+        x = PApplet.constrain(x, 0, level.cols * level.cellWidth - w);
+        y = PApplet.constrain(y, 0, level.rows * level.cellHeight - h);
 
         if (keyLeft) dx -= speed; 
         if (keyRight)dx += speed;
