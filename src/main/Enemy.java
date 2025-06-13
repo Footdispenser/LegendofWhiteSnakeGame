@@ -38,14 +38,14 @@ public class Enemy {
     }
     
     
-    public void update(){
+    public void update(tilemap map){
         
         targetX = person.x;
         targetY = person.y;
 
        float distApart = PApplet.dist(x+(w/2),y+h/2, targetX+(pW/2),targetY + (pH/2));
        //chase
-       if(distApart < 300){
+       if(distApart < 500){
            if(x<targetX){
                keyRight = true;
                keyLeft = false;
@@ -65,6 +65,10 @@ public class Enemy {
            keyUP = false;
            keyDown = false; 
        }// end chase
+       // boudnary check
+        x = PApplet.constrain(x, 0, map.cols * map.cellWidth - w);
+        y = PApplet.constrain(y, 0, map.rows * map.cellHeight - h);
+
         if (keyLeft) dx -= speed; 
         if (keyRight)dx += speed;
         if (keyUP) dy -= speed;

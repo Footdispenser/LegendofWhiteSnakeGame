@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package main;
+import java.util.ArrayList;
 import processing.core.PApplet;
 
 /**
@@ -27,6 +28,16 @@ public class tilemap{
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
     int rows, cols;
@@ -40,12 +51,34 @@ public class tilemap{
         cellWidth = 64;
         cellHeight = 64;
     }
+    
     public void draw(){
         app.background(255);
         rendermap();
         isPlayerColliding();
     }
-    
+    public int[] getRandomFloorPosition() {
+        ArrayList<int[]> floorTiles = new ArrayList<>();
+
+        // Collect all floor tile positions
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (tilemap[i][j] == 0) { // Floor tile
+                    floorTiles.add(new int[]{j * cellWidth + cellWidth / 2,
+                        i * cellHeight + cellHeight / 2});
+                }
+            }
+        }
+
+        // Return a random floor position
+        if (!floorTiles.isEmpty()) {
+            return floorTiles.get((int) app.random(0, floorTiles.size()));
+        }
+
+        // Default position if no floor tiles found (shouldn't happen)
+        return new int[]{cellWidth, cellHeight};
+    }
+
     public void rendermap(){
         for(int i = 0; i<rows; i++){
             for(int j = 0; j<cols;j++){
@@ -70,6 +103,19 @@ public class tilemap{
         }//end for row
     }// end render
     
+    public boolean isProjectileCollidingWithWall(Projectiles p) {
+        // Convert projectile position to grid coordinates
+        int gridX = (int) (p.x / cellWidth);
+        int gridY = (int) (p.y / cellHeight);
+
+        // Check if the projectile is within the map bounds
+        if (gridX >= 0 && gridX < cols && gridY >= 0 && gridY < rows) {
+            // Check if the tile is a wall (1)
+            return tilemap[gridY][gridX] == 1;
+        }
+        return false;
+    }
+
     public void isPlayerColliding() {
         // cycle through array
         for (int i = 0; i < rows; i++) {
@@ -123,4 +169,5 @@ public class tilemap{
             }
         }
     }
+    
 }

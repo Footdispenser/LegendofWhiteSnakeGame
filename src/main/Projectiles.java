@@ -13,7 +13,7 @@ import processing.core.PImage;
 public class Projectiles {
     PApplet app;
     public float x, y, vx, vy;
-    public float speed = 5;
+    public float speed = 20;
     public int size = 20;
     public boolean active = true;
     PImage image;
@@ -31,14 +31,19 @@ public class Projectiles {
          this.image = app.loadImage("images/ball (1).png");
     }// end main constructor
     
-    public void update(){
+    public void update(tilemap map){
         x+=vx;
         y+=vy;
         
-        // deactivate after out of map
-        if(x<0  || y<0 ){
-            active =false;
-        }// end if
+        // Check for wall collisions
+        if (map.isProjectileCollidingWithWall(this)) {
+            active = false;
+        }
+
+//        // deactivate after out of map
+//        if(x<0  || y<0 ){
+//            active =false;
+//        }// end if
     }//end
     public void draw(){
         app.fill(0);

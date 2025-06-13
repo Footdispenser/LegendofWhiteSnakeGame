@@ -28,7 +28,7 @@ public class MySketch extends PApplet {
     private Enemy [] enemies;
     private ArrayList <Projectiles> projectiles = new ArrayList<>();
     private int shootingCD = 0;
-    private final int SHOOT_DELAY = 1; // frames
+    private final int SHOOT_DELAY = 10; // frames
     
     // other misc
     private int stage = 0;
@@ -41,22 +41,24 @@ public class MySketch extends PApplet {
     public void setup(){
         background(0);
         person = new Person(this);
-//        e1 = new Enemy(this, 500, 600,person, person.x, person.y,person.playerImages[0].width, person.playerImages[0].height);
-        enemies = new Enemy[1];
-        for(int k = 0;k<enemies.length;k++){ 
-            enemies[k] = new Enemy(this, round(random(0,1300)), round(random(0,1000)), 
+        camera = new Camera(this);
+        map = new tilemap(this, person);
+        enemies = new Enemy[10];
+        ////////// initalise all the enemies
+        for(int k = 0;k<enemies.length;k++){
+            int[] floorPos = map.getRandomFloorPosition();
+            enemies[k] = new Enemy(this, floorPos[0], floorPos[1], 
                     person, person.x, person.y,
                     person.playerImages[0].width, person.playerImages[0].height);
         }
-        camera = new Camera(this);
-        map = new tilemap(this, person);
+
 
     }
     
     public void draw() {
         // send the player information to the camera for accurate following
         camera.follow( person.x, person.y, width, height, 
-        person.playerImages[0].width, person.playerImages[0].height);
+                       person.playerImages[0].width, person.playerImages[0].height);
         // activates the camera/applys it
         camera.apply();
         
@@ -70,26 +72,31 @@ public class MySketch extends PApplet {
         
 //        e1.update();
 //        e1.draw();
+        /////////// ENEMIES /////////////////////////////////////
         for(int k = 0; k < enemies.length; k++) {
-            enemies[k].update();
-            enemies[k].draw();
-            if(rectangleIntersect(person, enemies[k])){
-                fill(255,0,0,25);
-                rect(0,0,width, height);
+            if(enemies[k]!=null){
+                enemies[k].update(map);
+                enemies[k].draw();
+                if(rectangleIntersect(person, enemies[k])){
+                    fill(255,0,0,25);
+                    rect(0,0,width, height);
+                }
             }
         }
-        /// projectiles
+        /// projectiles////////////////////////////////
         for(int i = projectiles.size()-1;i>=0; i--){
             Projectiles p = projectiles.get(i);
-            p.update();
+            p.update(map);
             p.draw();
             // hit enemy
-            for(int j = 0; j<enemies.length; j++){
-                if(p.hits(enemies[j])){
-                    //creates new enemy
-                    enemies[j] = new Enemy(this,round(random(0,1300)), round(random(0,1000)),
-                        person, person.x, person.y,
-                        person.playerImages[0].width, person.playerImages[0].height);
+            for(int j = enemies.length-1;j>=0; j--){
+                if(enemies[j] != null && p.hits(enemies[j])){
+                        // creates new enemy
+//                    int[] floorPos = map.getRandomFloorPosition();
+//                    enemies[j] = new Enemy(this, floorPos[0], floorPos[1], 
+//                        person, person.x, person.y,
+//                        person.playerImages[0].width, person.playerImages[0].height);
+                    enemies[j] = null;
                     p.active =false;
                     break;
                 }

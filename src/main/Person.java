@@ -32,8 +32,8 @@ public class Person {
     // main constructor
     public Person(PApplet app) {
         this.app = app;
-        this.x = app.width/2; // starts player form the middle of the screen
-        this.y = app.height/2;
+        this.x = 740; // starts player form the middle of the screen
+        this.y = 1300;
 
         // load all images frames
         this.offset = 0;
@@ -63,16 +63,6 @@ public class Person {
         x += dx;
         y += dy;
         ////////////////////////////////////////////////////////////////////
-        //boundary check    
-//        if(x+ playerImages[0].width >= app.width){ // doesnt go past furthest right
-//            x=app.width-playerImages[0].width;
-//        }else if (x <= 0){ // left
-//            x=0;
-//        }if (y+playerImages[0].height>= app.height){ // down
-//            y=app.height-playerImages[0].height;
-//        }else if (y<=0){ // up
-//            y=0;
-//        }
         frameCount++;
         if (frameCount % animationSpeed == 0) { 
             currentFrame = (currentFrame + 1) % frameRep;
