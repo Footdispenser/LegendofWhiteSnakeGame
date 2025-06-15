@@ -40,14 +40,9 @@ public class Projectiles {
             active = false;
         }
 
-//        // deactivate after out of map
-//        if(x<0  || y<0 ){
-//            active =false;
-//        }// end if
     }//end
     public void draw(){
         app.fill(0);
-//        app.rect(x, y, size, size);
         app.image(image, x, y);
     }//end
     

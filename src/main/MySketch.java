@@ -23,9 +23,10 @@ public class MySketch extends PApplet {
     // perosn attributes
     
     private Person person;
-//    private Enemy e1;
-//    private tilemap map;
-    private Enemy [] enemies;
+
+    private ArrayList<Enemy> enemies = new ArrayList<>();
+    
+    ///// projectile properties
     private ArrayList <Projectiles> projectiles = new ArrayList<>();
     private int shootingCD = 0;
     private final int SHOOT_DELAY = 10; // frames
@@ -40,81 +41,73 @@ public class MySketch extends PApplet {
     public void settings(){
         size((width), height);  
     }
+    
     public void setup(){
         person = new Person(this);
         camera = new Camera(this);
         levels = new level[2];
-        // Level 0
+        ////////////////////////// Level 1
         int map1[][] = {
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
         };
         int [] playerSpawn1 = {740, 1300};
         levels[0] = new level(this, map1, playerSpawn1,person);
-        
+        ////////////////////////////// level 2
         int map2[][] = {
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3},
+            {3, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 3},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
         };
         int[] playerSpawn2 = {740, 1300};
         levels[1] = new level(this, map2, playerSpawn2 , person);
 
 //        background(0);
-
         setPlayerPos();
         initializeEnemies();
-//        map = new tilemap(this, person);
-//        enemies = new Enemy[10];
-//        ////////// initalise all the enemies
-//        for(int k = 0;k<enemies.length;k++){
-//            int[] floorPos = map.getRandomFloorPosition();
-//            enemies[k] = new Enemy(this, floorPos[0], floorPos[1], 
-//                    person, person.x, person.y,
-//                    person.playerImages[0].width, person.playerImages[0].height);
-//        }
-
 
     }
     ///////////////// SETUP METHODS //////////////////////////
@@ -125,15 +118,16 @@ public class MySketch extends PApplet {
         
     }
     private void initializeEnemies() {
+        enemies.clear();
         ArrayList<int[]> spawns = levels[currLevel].getEnemySpawns();
-        enemies = new Enemy[spawns.size()]; // Proper size
+        
 
         for (int k = 0; k < spawns.size(); k++) {
             int[] pos = spawns.get(k);
-            enemies[k] = new Enemy(this, pos[0], pos[1], person,
+            enemies.add(new Enemy(this, pos[0], pos[1], person,
                     person.x, person.y,
                     person.playerImages[0].width,
-                    person.playerImages[0].height);
+                    person.playerImages[0].height));
 
         }
     }
@@ -158,86 +152,103 @@ public class MySketch extends PApplet {
             }
         }
     }
+    ////////////////////// DRAW //////////////////////////////////
     public void draw() {
+        background(0);
+        switch (stage){
+            case 0:
+                drawGame();
+                break;
+            case 1:
+                //// draw death message
+                fill(0, 0, 0, 200);
+                rect(0, 0, width, height);
+
+                // Death message
+                fill(255);
+                textSize(48);
+                textAlign(CENTER, CENTER);
+                text("YOU DIED", width / 2, height / 2 - 50);
+
+        }
+    }///////////////////////////// END DRAW ///////////////////////////////////////
+    
+    private void drawGame(){
         /// checks if teleported or not / checks current stage
         checkTeleport();
+
         // send the player information to the camera for accurate following
         camera.follow(person.x, person.y, width, height,
                 person.playerImages[0].width, person.playerImages[0].height);
-        // activates the camera/applys it
-        camera.apply();
-        //// draw mappp
-        levels[currLevel].draw();
 
-        
-        // draws the background 
-//        map.draw();
-        
-        // drawing in the player
+        camera.apply();// activates the camera/applys it
+
+        ///////////////////////// level /////////////////////////////////////
+        levels[currLevel].draw();
+        levels[currLevel].isPlayerColliding();
+
+        ///////////////////////// player/person /////////////////////////////////////
         person.update(); // player movements
         person.draw(); // player looks
         person.displayInfo(this); // testing - display player x and y
-        
-//        e1.update();
-//        e1.draw();
-        /////////// ENEMIES /////////////////////////////////////
-//        for(int k = 0; k < enemies.length; k++) {
-//            if(enemies[k]!=null){
-//                enemies[k].update(map);
-//                enemies[k].draw();
-//                if(rectangleIntersect(person, enemies[k])){
-//                    fill(255,0,0,25);
-//                    rect(0,0,width, height);
-//                }
-//            }
-//        }
-        for (int k = 0; k < enemies.length; k++) {
-            if (enemies[k] != null) {
-                enemies[k].update(levels[currLevel]); 
-                enemies[k].draw();
 
-                if (rectangleIntersect(person, enemies[k])) {
-                    fill(255, 0, 0, 25);
-                    rect(0, 0, width, height);
-                }
+        ///////////////////////// enemies /////////////////////////////////////
+        for (int i = enemies.size() - 1; i >= 0; i--) {
+            Enemy e = enemies.get(i);
+            e.update(levels[currLevel]);
+            if (e.isDead) {
+                continue; // skips dead enemies so you dont take invisible dmg
             }
+
+            e.EnemyCollisions(enemies);
+
+            if (rectangleIntersect(person, e)) {
+                e.attack(person);
+//                fill(255, 0, 0, 25);
+//                rect(0, 0, width, height);
+                if(person.currHp <=0){ // if the player dies
+                    stage += 1;
+                }
+
+            }
+            e.draw();
+
         }
 
-        ////////// projectiles////////////////////////////////
-        for(int i = projectiles.size()-1;i>=0; i--){
+        //////////////////////// projectiles ////////////////////////////////
+        for (int i = projectiles.size() - 1; i >= 0; i--) {
             Projectiles p = projectiles.get(i);
             p.update(levels[currLevel]);
             p.draw();
-            // hit enemy
-            for(int j = enemies.length-1;j>=0; j--){
-                if(enemies[j] != null && p.hits(enemies[j])){
-                        // creates new enemy
-//                    int[] floorPos = map.getRandomFloorPosition();
-//                    enemies[j] = new Enemy(this, floorPos[0], floorPos[1], 
-//                        person, person.x, person.y,
-//                        person.playerImages[0].width, person.playerImages[0].height);
-                    enemies[j] = null;
-                    p.active =false;
+            // enemy collision check
+            for (int j = enemies.size() - 1; j >= 0; j--) {
+                Enemy e = enemies.get(j);
+                if (!e.isDead && p.hits(e)) {// only checks alive enemies so projectiles dont hit inisible enemies
+                    e.die(); // kills the enemy/ sets isDead to true
+                    p.active = false;
                     break;
                 }
             }
-            //removes the enemy
-            if(!p.active){
+            // removes the projectile
+            if (!p.active) {
                 projectiles.remove(i);
             }
         }
-        if(shootingCD>0){
-            shootingCD --;
+        if (shootingCD > 0) {
+            shootingCD--;
         }
+
         // resets
         resetMatrix();
-        
+
+        ///////////////////////// hp bar /////////////////////////////////////
+        person.drawHpBar(this);
+
         // testing - shows corrdinates of the camera and player
         fill(0);
         text("Player: x=" + person.x + " , y=" + person.y, 500, 20);
         text("Camera: x=" + camera.x + " , y=" + camera.y, 500, 40);
-    }// end draw
-    
+    }
     ////////////////////////////// KEYBOARD INPUTS ////////////////////////////////
     public void keyPressed() {
         if (key == 'a'|| key == 'A') person.keyLeft = true; // LEFT
@@ -256,6 +267,7 @@ public class MySketch extends PApplet {
             person.keyDown = false;
         }
     }
+    
     //////////////////////// COLLISON DETECTION /////////////////////////////
     boolean rectangleIntersect(Person r1, Enemy r2){
         float distX = abs((r1.x+r1.w/2) - (r2.x+r2.w/2));
@@ -270,6 +282,7 @@ public class MySketch extends PApplet {
         }
     return false;
     }
+    
     ///////////////// MOUSE TRACKING AND PROJECTILE ///////////////////////
     public void mousePressed(){
         if(shootingCD <= 0){

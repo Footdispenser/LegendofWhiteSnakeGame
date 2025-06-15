@@ -20,7 +20,11 @@ public class Person {
     public int hitboxOffsetX = 25; // 21 pixels right from player.x
     public int hitboxWidth = 68;   // Hitbox width
     public int hitboxHeight = 105; // Hitbox height
-
+    public int maxHp = 100;
+    public int currHp = maxHp;
+    private int lastHitTime = 0;
+    private final int invulnerabilityDuration = 120; // 2 seconds
+    
     /////////////// player animation
     public PImage playerImages[];
     private int currentFrame = 0;
@@ -47,6 +51,20 @@ public class Person {
         this.w = playerImages[0].width;
         this.h = playerImages[0].height;
     }
+    
+    public void takeDamage(int damage) {
+        // millis() is just converting to milisceonds
+        if (app.millis() - lastHitTime > invulnerabilityDuration) {
+            currHp = PApplet.max(0, currHp - damage);
+            lastHitTime = app.millis();
+
+            if (currHp <= 0) {
+                // player death player death here
+                System.out.println("Player died!");
+            }
+        }
+    }
+
     // for movement/animations
     public void update(){
         //////////////////// player movement ////////////////////////////////
@@ -71,6 +89,26 @@ public class Person {
         dx = 0;
         dy = 0;
     }
+    // draws player hp bar
+    public void drawHpBar(PApplet app) {
+        float barWidth = 200;
+        float barHeight = 20;
+        float hpPercent = (float) currHp / maxHp; // converts to percentage
+
+        // Background
+        app.fill(50);
+        app.rect(20, 20, barWidth, barHeight);
+
+        // Health fill
+        app.fill(255, 0, 0);
+        app.rect(20, 20, barWidth * hpPercent, barHeight);
+
+        // Text
+        app.fill(255);
+        app.textSize(16);
+        app.text("HP: " + currHp + "/" + maxHp, 25, 35);
+    }
+
     // drawing the player
     public void draw(){
 //        app.fill(128, 128, 128);

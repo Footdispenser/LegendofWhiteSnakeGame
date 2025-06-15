@@ -24,11 +24,13 @@ public class level {
         this.app = app;
         this.p = p;
         this.tilemap = tilemap;
+        this.rows = tilemap.length;
+        this.cols = tilemap[0].length;
         this.cellWidth = 64;
         this.cellHeight = 64;
         this.playerSpawnPoint = playerSpawn;
         this.enemySpawnPoints = new ArrayList<>();
-        this.telepoints =  new ArrayList<>();
+        this.telepoints = new ArrayList<>();
         scanSpecialTiles();
     }
     
@@ -37,8 +39,8 @@ public class level {
             for(int x=0;x<tilemap[y].length; x++){
                 if(tilemap[y][x] == 3){ // enemy spawn
                     enemySpawnPoints.add(new int[]{
-                    x * cellWidth + cellWidth/2,
-                    y * cellHeight + cellHeight/2,
+                    x * cellWidth,
+                    y * cellHeight,
                     cellWidth,
                     cellHeight
                     });// end enemySpawnPoints
