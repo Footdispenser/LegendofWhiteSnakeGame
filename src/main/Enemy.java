@@ -4,21 +4,23 @@
  */
 package main;
 
-/**
- *
- * @author 342964137
- */
+
 import java.util.ArrayList;
 import processing.core.PApplet;
 import processing.core.PImage;
-
-public class Enemy {
+/**
+ * The Enemy class represents hostile entities in the game that chase and attack the player.
+ * It handles enemy  movement, animations, collisions, and attacks.
+ * Extends GameObject to inherit basic game object properties and behaviors.
+ * @author 342964137
+ */
+public class Enemy extends GameObject{
     public boolean keyLeft, keyRight, keyUP, keyDown;
     public int x,y,dx,dy, w, h;
     PApplet app;
     private int targetX,targetY;
     private float pW, pH;
-    private int speed = 5;
+    private int speed = 6;
     private Person person;
     // respawn for the enemy
     private int spawnX, spawnY;
@@ -30,7 +32,7 @@ public class Enemy {
 
     public  boolean isDead = false;
     private int respawnTimer = 0;
-    private final int RESPAWN_DELAY = 60 * 5; // change second number cuz it represents seconds
+    private final int RESPAWN_DELAY = 60 * 2; // change second number cuz it represents seconds
     
     ///////// ANIMATIONS ///////////////////
     public PImage enemyImages[];
@@ -40,11 +42,25 @@ public class Enemy {
     private int frameRep = 8;
     private int animationSpeed = 3;
     
+    /////// smoothing the movement referenced from John McCaffery on youtube
     private float actualX, actualY; // for smoothing
     private float moveLerp = 0.3f; // the range for lerp - change for how smooth you want the movement - lower  = smoother
 
-    
+    /**
+     * Constructs a new Enemy instance.
+     *
+     * @param app The  PApplet instance
+     * @param x Initial x-coordinate
+     * @param y Initial y-coordinate
+     * @param person Reference to player object
+     * @param targetX Initial target x-coordinate
+     * @param targetY Initial target y-coordinate
+     * @param pW Player width for collision
+     * @param pH Player height for collision
+     */
+
     public Enemy(PApplet app, int x, int y, Person person, int targetX, int targetY, float pW, float pH){
+        super(app, x, y);
         this.app = app;
         this.x = x;
         this.y = y;
@@ -62,7 +78,7 @@ public class Enemy {
         keyUP =false;
         keyDown = false;
         
-        // load all images frames
+        // load all images frames for aniamtions
         this.offset = 0;
         enemyFrames = 16;
         enemyImages = new PImage[enemyFrames];
@@ -73,23 +89,39 @@ public class Enemy {
         }
     }
     
-    // sets the enemies postion to their intial pos/ spawn point
+    /**
+     * sets the enemies postion to their intial pos/ spawn point.
+     */
     public void respawn(){
         this.x = spawnX;
         this.y = spawnY;
     }
-    // if this method is called changes the boolean to true
+    /**
+     * marks enemy as dead and resets respawning timer.
+     * 
+     */
     public void die() {
         isDead = true;
         respawnTimer = RESPAWN_DELAY;
     }
     
+    /**
+     * Checks collision with another enemy.
+     * @param other The other Enemy to check against
+     * @return true if it is colliding
+     * referenced from John McCaffery on youtube
+     */
     public boolean collidesWith(Enemy other) {
         return !(x >= other.x + other.w
                 || x + w <= other.x
                 || y >= other.y + other.h
                 || y + h <= other.y);
     }
+    /**
+     * Handles collisions with all other enemies.
+     *
+     * @param allEnemies List of all active enemies
+     */
     public void EnemyCollisions(ArrayList<Enemy> allEnemies) {
         for (Enemy other : allEnemies) {
             if (other != this && collidesWith(other)) {
@@ -97,15 +129,19 @@ public class Enemy {
             }
         }
     }
-    
+    /**
+     * Resolves collision between two enemies by applying push force.
+     * @param other The enemy being collided with
+     * reference from deepseek
+     */
     private void resolveCollision(Enemy other) {
-        // Calculate center points
+        // find center points
         float thisCenterX = x + w / 2;
         float thisCenterY = y + h / 2;
         float otherCenterX = other.x + other.w / 2;
         float otherCenterY = other.y + other.h / 2;
 
-        // Calculate difference vector
+        // calcualte difference vector
         float dx = thisCenterX - otherCenterX;
         float dy = thisCenterY - otherCenterY;
         float distance = PApplet.max(1, PApplet.sqrt(dx * dx + dy * dy));
@@ -118,18 +154,21 @@ public class Enemy {
         y += dy * pushForce;
         other.x -= dx * pushForce;
         other.y -= dy * pushForce;
-        keyLeft = false;
-        keyRight = false;
-        keyUP = false;
-        keyDown = false;
-
-
     }
     
+    /**
+     * Checks if enemy can attack based on cd.
+     *
+     * @return true if attack is ready, false if on cd
+     */
     public boolean canAttack() {
         return app.millis() - lastAttackTime > attackCooldown;
     }
-    
+    /**
+     * Attacks the player if cd is done.
+     *
+     * @param player The player to attack
+     */
     public void attack(Person player) {
         if (canAttack()) {
             player.takeDamage(attackDamage);
@@ -137,7 +176,12 @@ public class Enemy {
         }
     }
 
-
+    /**
+     * Updates enemy movement, and animation.
+     *
+     * @param level Current level for collision detection
+     * referenced from John McCaffery on youtube
+     */
     public void update(level level){
         // checks the respawn time and updates it
         if (isDead) {
@@ -156,7 +200,8 @@ public class Enemy {
         // updates the and tracks the players coordinates
         targetX = person.x;
         targetY = person.y;
-
+        
+        // enemy chasing - referenced from John McCaffery on youtube
        float distApart = PApplet.dist(x+(w/2),y+h/2, targetX+(pW/2),targetY + (pH/2));
        //chase
        if(distApart < 700){
@@ -192,7 +237,6 @@ public class Enemy {
         if (keyDown)dy += speed;
         x+=dx;
         y+=dy;
-
         
         frameCount++;
         if (frameCount % animationSpeed == 0) {
@@ -202,15 +246,13 @@ public class Enemy {
         actualX = PApplet.lerp(actualX, x, moveLerp);
         actualY = PApplet.lerp(actualY, y, moveLerp);
     }
-    
+    /**
+     * Draws the enemy at its current position with smoothing. Skips drawing
+     * if enemy is dead.
+     */
     public void draw(){
         if (isDead) return; // dont draw if the enemy is dead  
         app.image(enemyImages[currentFrame + offset], actualX, actualY);
-//        app.fill(0,255,255);
-//        app.rect(x, y, w, h);
     }
     
-
-    
-
 }

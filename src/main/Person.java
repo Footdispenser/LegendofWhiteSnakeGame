@@ -4,19 +4,21 @@
  */
 package main;
 
-/**
- *
- * @author 342964137
- */
+
+
 import processing.core.PApplet;
 import processing.core.PImage;
-
-public class Person {
-    private PApplet app;
+/**
+ * The Person class represents the player character in the game.
+ * It handles player movement, animations, health management, and rendering.
+ * Extends GameObject to inherit basic game object properties and behaviors.
+ *  @author 342964137
+ */
+public class Person extends GameObject {
     /////////////// player settings
-    public int x,y,dx,dy, w, h;
+    public int x, y, dx, dy;
     public boolean keyLeft, keyRight, keyUP, keyDown;
-    public int speed = 8;
+    public int speed = 10;
     public int hitboxOffsetX = 25; // 21 pixels right from player.x
     public int hitboxWidth = 68;   // Hitbox width
     public int hitboxHeight = 105; // Hitbox height
@@ -31,14 +33,15 @@ public class Person {
     private int frameCount = 0;
     int playerFrames, offset;
     private int frameRep = 8;
-    private int animationSpeed = 3;
-    
-    // main constructor
+    private int animationSpeed = 3; 
+    /**
+    * Main Constructs that constructs a new Player character.
+    * @param app The PApplet instance
+    * referenced from John McCaffery on youtube
+    */
+    // constructor
     public Person(PApplet app) {
-        this.app = app;
-        this.x = 740; // starts player form the middle of the screen
-        this.y = 1300;
-
+        super(app, 740, 1300); // calls parent constructor
         // load all images frames
         this.offset = 0;
         playerFrames = 16;
@@ -51,9 +54,14 @@ public class Person {
         this.w = playerImages[0].width;
         this.h = playerImages[0].height;
     }
-    
+    /**
+     * Applies damage to the player with invulnerability frames.
+     *
+     * @param damage The amount of damage to take
+     * referenced from John McCaffery on youtube
+     */
     public void takeDamage(int damage) {
-        // millis() is just converting to milisceonds
+        // millis() is just converting to milliseconds
         if (app.millis() - lastHitTime > invulnerabilityDuration) {
             currHp = PApplet.max(0, currHp - damage);
             lastHitTime = app.millis();
@@ -64,66 +72,102 @@ public class Person {
             }
         }
     }
-
+    /**
+     * Updates player position and animation based on input. Called once per
+     * frame.
+     * referenced from John McCaffery on youtube
+     */
     // for movement/animations
     public void update(){
         //////////////////// player movement ////////////////////////////////
         if (keyLeft){
             dx -= speed;
             offset = 8;// changes animation when it moves left
-        }if (keyRight){
+        }
+        if (keyRight){
             dx += speed;
             offset = 0;// animation for moving right
         } 
         if (keyUP) dy -= speed; // when moving upwards
-        if (keyDown) dy += speed; // when moving downards
+        if (keyDown) dy += speed; // when moving downwards
+        
         // code to move the player
         x += dx;
         y += dy;
+        
         ////////////////////////////////////////////////////////////////////
         frameCount++;
         if (frameCount % animationSpeed == 0) { 
             currentFrame = (currentFrame + 1) % frameRep;
         }
-        // resests 
+        // resets 
         dx = 0;
         dy = 0;
     }
+    
     // draws player hp bar
+    /**
+     * Draws the player's health bar on screen.
+     *
+     * @param app The PApplet instance to draw to
+     */
     public void drawHpBar(PApplet app) {
+        app.pushStyle();
+
         float barWidth = 200;
         float barHeight = 20;
-        float hpPercent = (float) currHp / maxHp; // converts to percentage
+        float hpPercent = (float) currHp / maxHp;
 
-        // Background
+        // Background (grey)
         app.fill(50);
         app.rect(20, 20, barWidth, barHeight);
 
-        // Health fill
+        // Health (red)
         app.fill(255, 0, 0);
         app.rect(20, 20, barWidth * hpPercent, barHeight);
 
-        // Text
+        // Border (white)
+        app.noFill();
+        app.stroke(255);
+        app.rect(20, 20, barWidth, barHeight);
+
+        // text (white)
         app.fill(255);
         app.textSize(16);
-        app.text("HP: " + currHp + "/" + maxHp, 25, 35);
+        app.textAlign(PApplet.LEFT, PApplet.TOP);
+        app.text("HP: " + currHp + "/" + maxHp, 25, 22);
+
+        // redo it drawing style
+        app.popStyle();
     }
 
     // drawing the player
+    /**
+     * Draws the player character at its current position. 
+     * Overrides the GameObject draw method
+     */
+    @Override
     public void draw(){
-//        app.fill(128, 128, 128);
-//        app.circle(x + playerImages[0].width / 2, y + playerImages[0].height / 2, 400);
-        // shows player hitbox
-        app.fill(255,0,0);
-        app.rect(x + hitboxOffsetX, y, hitboxWidth, hitboxHeight);
-
         // draws the player
         app.image(playerImages[currentFrame+offset], x, y);
     }
-    // players coordinates
-    public void displayInfo(PApplet p) {
-        app.fill(0);
-        app.text("X: " + x, x, y-20);
-        app.text("Y: " + y, x, y-10);
+
+//    // players coordinates
+//    public void displayInfo(PApplet p) {
+//        app.fill(0);
+//        app.text("X: " + x, x, y-20);
+//        app.text("Y: " + y, x, y-10);
+//    }
+    /**
+     * Generates a response when interacting with another GameObject.
+     *
+     * @param other The GameObject being interacted with
+     * @return A response string based on the interaction
+     */
+    public String respondTo(GameObject other){
+        if(other instanceof Enemy){
+            return "Hi";
+        } 
+        return "wefohi";
     }
 }
